@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Learning Hub</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-image: url("background image for complete website.png");
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .nav-container {
+            position: relative;
+            width: 100%;
+            max-width: 1200px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .nav-header {
+            text-align: center;
+            margin-bottom: 80px;
+            z-index: 10;
+        }
+
+        .nav-header h1 {
+            color: white;
+            font-size: 48px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            margin-bottom: 10px;
+        }
+
+        .nav-subtitle {
+            color: white;
+            font-size: 20px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .logout-section {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 20;
+        }
+
+        .logout-btn-top {
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #718096 0%, #4a5568 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .logout-btn-top:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .user-info {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px 30px;
+            border-radius: 50px;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            z-index: 10;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .user-details {
+            text-align: left;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 3px;
+        }
+
+        .user-status {
+            font-size: 12px;
+            color: #718096;
+        }
+
+        .character-grid {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 80px;
+            width: 100%;
+            max-width: 1400px;
+            z-index: 10;
+            flex-wrap: wrap;
+            padding: 0 20px;
+        }
+
+        .character-item {
+            position: relative;
+            height: 250px;
+            min-width: 200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            flex: 0 0 auto;
+        }
+
+        .character-item:hover {
+            transform: translateY(-10px);
+        }
+
+        .character {
+            position: relative;
+            width: 120px;
+            height: 150px;
+            margin-bottom: 20px;
+        }
+
+        /* Boy Character */
+        .boy {
+            position: relative;
+            animation: boyFloat 3s ease-in-out infinite;
+        }
+
+        .boy-head {
+            width: 60px;
+            height: 60px;
+            background: #fdbcb4;
+            border-radius: 50%;
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .boy-hair {
+            position: absolute;
+            top: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 65px;
+            height: 25px;
+        }
+
+        .boy-hair-curly {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background: #4a4a4a;
+            border-radius: 50%;
+            animation: hairFloat 2s ease-in-out infinite;
+        }
+
+        .boy-hair-curly:nth-child(1) {
+            top: 0;
+            left: 5px;
+            animation-delay: 0s;
+        }
+
+        .boy-hair-curly:nth-child(2) {
+            top: -3px;
+            left: 20px;
+            animation-delay: 0.2s;
+        }
+
+        .boy-hair-curly:nth-child(3) {
+            top: 0;
+            left: 35px;
+            animation-delay: 0.4s;
+        }
+
+        .boy-hair-curly:nth-child(4) {
+            top: -2px;
+            left: 50px;
+            animation-delay: 0.6s;
+        }
+
+        .boy-hair-curly:nth-child(5) {
+            top: 5px;
+            left: 12px;
+            animation-delay: 0.3s;
+        }
+
+        .boy-hair-curly:nth-child(6) {
+            top: 3px;
+            left: 42px;
+            animation-delay: 0.5s;
+        }
+
+        .boy-body {
+            width: 80px;
+            height: 90px;
+            background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+            border-radius: 20px 20px 40px 40px;
+            position: absolute;
+            top: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .boy-arms {
+            position: absolute;
+            top: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 60px;
+        }
+
+        .boy-arm {
+            position: absolute;
+            width: 15px;
+            height: 50px;
+            background: #fdbcb4;
+            border-radius: 10px;
+            transform-origin: top center;
+        }
+
+        .boy-arm.left {
+            left: 10px;
+            transform: rotate(-20deg);
+            animation: leftArmWave 2s ease-in-out infinite;
+        }
+
+        .boy-arm.right {
+            right: 10px;
+            transform: rotate(20deg);
+            animation: rightArmWave 2s ease-in-out infinite 0.5s;
+        }
+
+        .boy-legs {
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 40px;
+        }
+
+        .boy-leg {
+            position: absolute;
+            width: 18px;
+            height: 40px;
+            background: #2d3748;
+            border-radius: 10px;
+        }
+
+        .boy-leg.left {
+            left: 15px;
+        }
+
+        .boy-leg.right {
+            right: 15px;
+        }
+
+        /* Girl Character */
+        .girl {
+            position: relative;
+            animation: girlFloat 3s ease-in-out infinite 1.5s;
+        }
+
+        .girl-head {
+            width: 60px;
+            height: 60px;
+            background: #fdbcb4;
+            border-radius: 50%;
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .girl-hair {
+            width: 70px;
+            height: 40px;
+            background: #8b4513;
+            border-radius: 50px 50px 0 0;
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .girl-ponytail {
+            position: absolute;
+            width: 20px;
+            height: 35px;
+            background: #8b4513;
+            border-radius: 15px;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            transform-origin: top center;
+            animation: ponytailSway 3s ease-in-out infinite;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .girl-ponytail::before {
+            content: '';
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            background: #8b4513;
+            border-radius: 50%;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .girl-hair-band {
+            position: absolute;
+            width: 30px;
+            height: 8px;
+            background: #ff69b4;
+            border-radius: 4px;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+        }
+
+        .girl-body {
+            width: 80px;
+            height: 90px;
+            background: linear-gradient(135deg, #ed64a6 0%, #d53f8c 100%);
+            border-radius: 20px 20px 40px 40px;
+            position: absolute;
+            top: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .girl-arms {
+            position: absolute;
+            top: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 60px;
+        }
+
+        .girl-arm {
+            position: absolute;
+            width: 15px;
+            height: 50px;
+            background: #fdbcb4;
+            border-radius: 10px;
+            transform-origin: top center;
+        }
+
+        .girl-arm.left {
+            left: 10px;
+            transform: rotate(-20deg);
+            animation: leftArmWave 2s ease-in-out infinite 0.3s;
+        }
+
+        .girl-arm.right {
+            right: 10px;
+            transform: rotate(20deg);
+            animation: rightArmWave 2s ease-in-out infinite 0.8s;
+        }
+
+        .girl-legs {
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 40px;
+        }
+
+        .girl-leg {
+            position: absolute;
+            width: 18px;
+            height: 40px;
+            background: #2d3748;
+            border-radius: 10px;
+        }
+
+        .girl-leg.left {
+            left: 15px;
+        }
+
+        .girl-leg.right {
+            right: 15px;
+        }
+
+        .character-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 15px 20px;
+            border: none;
+            border-radius: 15px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            min-width: 140px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            z-index: 5;
+        }
+
+        .character-button:hover {
+            transform: translate(-50%, -50%) scale(1.1);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.4);
+        }
+
+        .dashboard-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .create-btn {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: white;
+        }
+
+        .play-btn {
+            background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%);
+            color: white;
+        }
+
+        .clear-btn {
+            background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%);
+            color: white;
+        }
+
+        .logout-btn {
+            background: linear-gradient(135deg, #718096 0%, #4a5568 100%);
+            color: white;
+        }
+
+        .btn-icon {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .btn-text {
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        /* Animations */
+        @keyframes boyFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        @keyframes girlFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        @keyframes leftArmWave {
+            0%, 100% { transform: rotate(-20deg); }
+            50% { transform: rotate(-40deg); }
+        }
+
+        @keyframes rightArmWave {
+            0%, 100% { transform: rotate(20deg); }
+            50% { transform: rotate(40deg); }
+        }
+
+        @keyframes hairFloat {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-2px) scale(1.1); }
+        }
+
+        @keyframes ponytailSway {
+            0%, 100% { transform: rotate(5deg); }
+            50% { transform: rotate(-5deg); }
+        }
+
+        @media (max-width: 1200px) {
+            .character-grid {
+                gap: 60px;
+                max-width: 1000px;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .character-grid {
+                gap: 40px;
+                max-width: 800px;
+            }
+
+            .character-item {
+                min-width: 180px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-header h1 {
+                font-size: 32px;
+            }
+
+            .nav-header {
+                margin-bottom: 60px;
+            }
+
+            .character-grid {
+                flex-direction: column;
+                gap: 50px;
+                padding: 0 15px;
+            }
+
+            .character-item {
+                height: 200px;
+                min-width: 160px;
+            }
+
+            .character {
+                width: 100px;
+                height: 120px;
+            }
+
+            .boy-head, .girl-head {
+                width: 50px;
+                height: 50px;
+            }
+
+            .boy-body, .girl-body {
+                width: 70px;
+                height: 80px;
+                top: 40px;
+            }
+
+            .character-button {
+                padding: 12px 15px;
+                min-width: 120px;
+            }
+
+            .logout-section {
+                top: 10px;
+                right: 10px;
+            }
+
+            .logout-btn-top {
+                padding: 10px 15px;
+                font-size: 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .nav-header h1 {
+                font-size: 28px;
+            }
+
+            .nav-subtitle {
+                font-size: 16px;
+            }
+
+            .character-grid {
+                gap: 40px;
+                padding: 0 10px;
+            }
+
+            .character-item {
+                height: 180px;
+                min-width: 140px;
+            }
+
+            .character {
+                width: 90px;
+                height: 110px;
+            }
+
+            .boy-head, .girl-head {
+                width: 45px;
+                height: 45px;
+            }
+
+            .boy-body, .girl-body {
+                width: 60px;
+                height: 70px;
+                top: 35px;
+            }
+
+            .user-info {
+                padding: 12px 20px;
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .logout-btn-top {
+                padding: 8px 12px;
+                font-size: 11px;
+            }
+        }
+
+        /* Split screen styles */
+        @media (max-height: 600px) {
+            .nav-container {
+                padding: 10px;
+            }
+
+            .nav-header {
+                margin-bottom: 40px;
+            }
+
+            .nav-header h1 {
+                font-size: 24px;
+            }
+
+            .nav-subtitle {
+                font-size: 14px;
+            }
+
+            .character-item {
+                height: 180px;
+            }
+
+            .character {
+                width: 80px;
+                height: 100px;
+            }
+
+            .boy-head, .girl-head {
+                width: 40px;
+                height: 40px;
+            }
+
+            .boy-body, .girl-body {
+                width: 55px;
+                height: 65px;
+                top: 30px;
+            }
+
+            .character-button {
+                padding: 10px 12px;
+                min-width: 100px;
+                font-size: 14px;
+            }
+
+            .btn-icon {
+                font-size: 20px;
+            }
+
+            .btn-text {
+                font-size: 10px;
+            }
+        }
+
+        /* Ultra-wide screens */
+        @media (min-width: 1400px) {
+            .character-grid {
+                gap: 100px;
+                max-width: 1600px;
+            }
+
+            .character-item {
+                min-width: 220px;
+            }
+
+            .character {
+                width: 140px;
+                height: 170px;
+            }
+
+            .boy-head, .girl-head {
+                width: 70px;
+                height: 70px;
+            }
+
+            .boy-body, .girl-body {
+                width: 90px;
+                height: 100px;
+                top: 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="nav-container">
+        <!-- Logout Button at Top -->
+        <div class="logout-section">
+            <button onclick="logout()" class="logout-btn-top">
+                <span>🚪</span>
+                <span>Logout</span>
+            </button>
+        </div>
+
+        <div class="nav-header">
+            <h1>🎯 Learning Hub</h1>
+            <p class="nav-subtitle">Your friends are here to help you learn!</p>
+        </div>
+
+        <div class="user-info">
+            <div class="user-avatar">👤</div>
+            <div class="user-details">
+                <div class="user-name">Student</div>
+                <div class="user-status">Ready to learn!</div>
+            </div>
+        </div>
+
+        <div class="character-grid">
+            <!-- Dashboard - Boy -->
+            <div class="character-item">
+                <div class="character boy">
+                    <div class="boy-head"></div>
+                    <div class="boy-hair">
+                        <div class="boy-hair-curly"></div>
+                        <div class="boy-hair-curly"></div>
+                        <div class="boy-hair-curly"></div>
+                        <div class="boy-hair-curly"></div>
+                        <div class="boy-hair-curly"></div>
+                        <div class="boy-hair-curly"></div>
+                    </div>
+                    <div class="boy-body"></div>
+                    <div class="boy-arms">
+                        <div class="boy-arm left"></div>
+                        <div class="boy-arm right"></div>
+                    </div>
+                    <div class="boy-legs">
+                        <div class="boy-leg left"></div>
+                        <div class="boy-leg right"></div>
+                    </div>
+                    <a href="5 dashboard.html" class="character-button dashboard-btn">
+                        <div class="btn-icon">📊</div>
+                        <div class="btn-text">Dashboard</div>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Create Cards - Girl -->
+            <div class="character-item">
+                <div class="character girl">
+                    <div class="girl-head"></div>
+                    <div class="girl-hair"></div>
+                    <div class="girl-ponytail"></div>
+                    <div class="girl-hair-band"></div>
+                    <div class="girl-body"></div>
+                    <div class="girl-arms">
+                        <div class="girl-arm left"></div>
+                        <div class="girl-arm right"></div>
+                    </div>
+                    <div class="girl-legs">
+                        <div class="girl-leg left"></div>
+                        <div class="girl-leg right"></div>
+                    </div>
+                    <a href="3 create flashcard.html" class="character-button create-btn">
+                        <div class="btn-icon">➕</div>
+                        <div class="btn-text">Create Cards</div>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Play Game - Boy -->
+            <div class="character-item">
+                <div class="character boy">
+                    <div class="boy-head"></div>
+                    <div class="boy-hair">
+                        <div class="boy-hair-curly"></div>
+                        <div class="boy-hair-curly"></div>
+                        <div class="boy-hair-curly"></div>
+                        <div class="boy-hair-curly"></div>
+                        <div class="boy-hair-curly"></div>
+                        <div class="boy-hair-curly"></div>
+                    </div>
+                    <div class="boy-body"></div>
+                    <div class="boy-arms">
+                        <div class="boy-arm left"></div>
+                        <div class="boy-arm right"></div>
+                    </div>
+                    <div class="boy-legs">
+                        <div class="boy-leg left"></div>
+                        <div class="boy-leg right"></div>
+                    </div>
+                    <a href="4 flipcard.html" class="character-button play-btn">
+                        <div class="btn-icon">🎮</div>
+                        <div class="btn-text">Play Game</div>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Clear Data - Girl -->
+            <div class="character-item">
+                <div class="character girl">
+                    <div class="girl-head"></div>
+                    <div class="girl-hair"></div>
+                    <div class="girl-ponytail"></div>
+                    <div class="girl-hair-band"></div>
+                    <div class="girl-body"></div>
+                    <div class="girl-arms">
+                        <div class="girl-arm left"></div>
+                        <div class="girl-arm right"></div>
+                    </div>
+                    <div class="girl-legs">
+                        <div class="girl-leg left"></div>
+                        <div class="girl-leg right"></div>
+                    </div>
+                    <button onclick="clearAllData()" class="character-button clear-btn">
+                        <div class="btn-icon">🗑️</div>
+                        <div class="btn-text">Clear Data</div>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function clearAllData() {
+            if (confirm("Are you sure you want to delete all flashcards and game statistics? This cannot be undone!")) {
+                localStorage.removeItem("flashcards");
+                localStorage.removeItem("gameStats");
+                alert("All data has been cleared!");
+            }
+        }
+
+        function logout() {
+            if (confirm("Are you sure you want to logout?")) {
+                // Clear current user session
+                localStorage.removeItem("currentUser");
+                alert("Logged out successfully!");
+                // Redirect to login page
+                window.location.href = "2 login.html";
+            }
+        }
+
+        // Check if user is logged in
+        window.onload = function() {
+            const currentUser = localStorage.getItem("currentUser");
+            if (!currentUser) {
+                // If no user is logged in, redirect to login page
+                window.location.href = "2 login.html";
+            } else {
+                // Update user info display
+                const user = JSON.parse(currentUser);
+                const userAvatar = document.querySelector(".user-avatar");
+                const userName = document.querySelector(".user-name");
+                const userStatus = document.querySelector(".user-status");
+                
+                if (userAvatar && userName && userStatus) {
+                    userAvatar.textContent = user.username.charAt(0).toUpperCase();
+                    userName.textContent = user.username;
+                    userStatus.textContent = "Ready to learn!";
+                }
+            }
+        };
+    </script>
+
+</body>
+</html>

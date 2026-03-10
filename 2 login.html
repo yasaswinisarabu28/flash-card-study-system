@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Flashcard Study App - Login</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-image: url("background image for complete website.png");
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .auth-container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            width: 450px;
+            box-shadow: 0px 15px 40px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .auth-header h1 {
+            color: #6b46c1;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .auth-header p {
+            color: #718096;
+            font-size: 16px;
+            margin: 0;
+        }
+
+        .tab-container {
+            display: flex;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 15px;
+            background: none;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            color: #718096;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+        }
+
+        .tab-btn.active {
+            color: #6b46c1;
+            border-bottom-color: #6b46c1;
+        }
+
+        .tab-btn:hover {
+            color: #6b46c1;
+        }
+
+        .form-container {
+            display: none;
+        }
+
+        .form-container.active {
+            display: block;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #4a5568;
+            font-size: 14px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+            box-sizing: border-box;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #6b46c1;
+        }
+
+        .input-group input.error {
+            border-color: #e53e3e;
+        }
+
+        .error-message {
+            color: #e53e3e;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .success-message {
+            background: #c6f6d5;
+            color: #22543d;
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: none;
+            text-align: center;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #6b46c1 0%, #553c9a 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(107, 70, 193, 0.4);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .password-strength {
+            height: 4px;
+            background: #e2e8f0;
+            border-radius: 2px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+
+        .password-strength-bar {
+            height: 100%;
+            transition: width 0.3s, background-color 0.3s;
+        }
+
+        .strength-weak {
+            background: #e53e3e;
+            width: 33%;
+        }
+
+        .strength-medium {
+            background: #ed8936;
+            width: 66%;
+        }
+
+        .strength-strong {
+            background: #48bb78;
+            width: 100%;
+        }
+
+        .requirements {
+            font-size: 12px;
+            color: #718096;
+            margin-top: 5px;
+        }
+
+        .requirement {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin: 2px 0;
+        }
+
+        .requirement.met {
+            color: #48bb78;
+        }
+
+        @media (max-width: 768px) {
+            .auth-container {
+                width: 90%;
+                padding: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="auth-container">
+        <div class="auth-header">
+            <h1>🎯 Flashcard Study App</h1>
+            <p>Your personalized learning journey starts here</p>
+        </div>
+
+        <div class="tab-container">
+            <button class="tab-btn active" onclick="switchTab('login')">Login</button>
+            <button class="tab-btn" onclick="switchTab('signup')">Sign Up</button>
+        </div>
+
+        <div class="success-message" id="successMessage"></div>
+
+        <!-- Login Form -->
+        <div class="form-container active" id="loginForm">
+            <form onsubmit="handleLogin(event)">
+                <div class="input-group">
+                    <label for="loginUsername">Username</label>
+                    <input type="text" id="loginUsername" placeholder="Enter your username" required>
+                    <div class="error-message" id="loginUsernameError"></div>
+                </div>
+
+                <div class="input-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" placeholder="Enter your password" required>
+                    <div class="error-message" id="loginPasswordError"></div>
+                </div>
+
+                <button type="submit" class="submit-btn">🚀 Login to Dashboard</button>
+            </form>
+        </div>
+
+        <!-- Signup Form -->
+        <div class="form-container" id="signupForm">
+            <form onsubmit="handleSignup(event)">
+                <div class="input-group">
+                    <label for="signupUsername">Username</label>
+                    <input type="text" id="signupUsername" placeholder="Choose a username" required minlength="3" maxlength="20">
+                    <div class="error-message" id="signupUsernameError"></div>
+                </div>
+
+                <div class="input-group">
+                    <label for="signupEmail">Email</label>
+                    <input type="email" id="signupEmail" placeholder="Enter your email" required>
+                    <div class="error-message" id="signupEmailError"></div>
+                </div>
+
+                <div class="input-group">
+                    <label for="signupPassword">Password</label>
+                    <input type="password" id="signupPassword" placeholder="Create a password" required minlength="6" oninput="checkPasswordStrength()">
+                    <div class="error-message" id="signupPasswordError"></div>
+                    <div class="password-strength">
+                        <div class="password-strength-bar" id="strengthBar"></div>
+                    </div>
+                    <div class="requirements">
+                        <div class="requirement" id="reqLength">✓ At least 6 characters</div>
+                        <div class="requirement" id="reqUppercase">✓ One uppercase letter</div>
+                        <div class="requirement" id="reqLowercase">✓ One lowercase letter</div>
+                        <div class="requirement" id="reqNumber">✓ One number</div>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input type="password" id="confirmPassword" placeholder="Confirm your password" required>
+                    <div class="error-message" id="confirmPasswordError"></div>
+                </div>
+
+                <button type="submit" class="submit-btn">📝 Create Account</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Tab switching
+        function switchTab(tab) {
+            const tabs = document.querySelectorAll('.tab-btn');
+            const forms = document.querySelectorAll('.form-container');
+            
+            tabs.forEach(t => t.classList.remove('active'));
+            forms.forEach(f => f.classList.remove('active'));
+            
+            if (tab === 'login') {
+                tabs[0].classList.add('active');
+                document.getElementById('loginForm').classList.add('active');
+            } else {
+                tabs[1].classList.add('active');
+                document.getElementById('signupForm').classList.add('active');
+            }
+            
+            clearMessages();
+        }
+
+        // Clear error and success messages
+        function clearMessages() {
+            document.querySelectorAll('.error-message').forEach(msg => {
+                msg.style.display = 'none';
+                msg.textContent = '';
+            });
+            document.querySelectorAll('.success-message').forEach(msg => {
+                msg.style.display = 'none';
+                msg.textContent = '';
+            });
+            document.querySelectorAll('input').forEach(input => {
+                input.classList.remove('error');
+            });
+        }
+
+        // Show error message
+        function showError(inputId, message) {
+            const input = document.getElementById(inputId);
+            const errorDiv = document.getElementById(inputId + 'Error');
+            
+            input.classList.add('error');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+
+        // Show success message
+        function showSuccess(message) {
+            const successDiv = document.getElementById('successMessage');
+            successDiv.textContent = message;
+            successDiv.style.display = 'block';
+        }
+
+        // Password strength checker
+        function checkPasswordStrength() {
+            const password = document.getElementById('signupPassword').value;
+            const strengthBar = document.getElementById('strengthBar');
+            
+            // Reset requirements
+            document.querySelectorAll('.requirement').forEach(req => {
+                req.classList.remove('met');
+            });
+            
+            let strength = 0;
+            
+            // Check requirements
+            if (password.length >= 6) {
+                strength++;
+                document.getElementById('reqLength').classList.add('met');
+            }
+            if (/[A-Z]/.test(password)) {
+                strength++;
+                document.getElementById('reqUppercase').classList.add('met');
+            }
+            if (/[a-z]/.test(password)) {
+                strength++;
+                document.getElementById('reqLowercase').classList.add('met');
+            }
+            if (/[0-9]/.test(password)) {
+                strength++;
+                document.getElementById('reqNumber').classList.add('met');
+            }
+            
+            // Update strength bar
+            strengthBar.className = 'password-strength-bar';
+            if (strength <= 1) {
+                strengthBar.classList.add('strength-weak');
+            } else if (strength <= 3) {
+                strengthBar.classList.add('strength-medium');
+            } else {
+                strengthBar.classList.add('strength-strong');
+            }
+        }
+
+        // Handle login
+        function handleLogin(event) {
+            event.preventDefault();
+            clearMessages();
+            
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            
+            // Get users from localStorage
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            const user = users.find(u => u.username === username);
+            
+            if (!user) {
+                showError('loginUsername', 'User not found');
+                return;
+            }
+            
+            if (user.password !== password) {
+                showError('loginPassword', 'Incorrect password');
+                return;
+            }
+            
+            // Login successful
+            localStorage.setItem('currentUser', JSON.stringify(user));
+            showSuccess('Login successful! Redirecting to dashboard...');
+            
+            setTimeout(() => {
+                window.location.href = '6 navigation.html';
+            }, 1500);
+        }
+
+        // Handle signup
+        function handleSignup(event) {
+            event.preventDefault();
+            clearMessages();
+            
+            const username = document.getElementById('signupUsername').value.trim();
+            const email = document.getElementById('signupEmail').value.trim();
+            const password = document.getElementById('signupPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            let hasError = false;
+            
+            // Validate username
+            if (username.length < 3) {
+                showError('signupUsername', 'Username must be at least 3 characters');
+                hasError = true;
+            }
+            
+            // Validate email
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showError('signupEmail', 'Please enter a valid email address');
+                hasError = true;
+            }
+            
+            // Validate password
+            if (password.length < 6) {
+                showError('signupPassword', 'Password must be at least 6 characters');
+                hasError = true;
+            }
+            
+            // Check password strength
+            if (!/[A-Z]/.test(password) || !/[a-z]/.test(password) || !/[0-9]/.test(password)) {
+                showError('signupPassword', 'Password must meet all requirements');
+                hasError = true;
+            }
+            
+            // Check password confirmation
+            if (password !== confirmPassword) {
+                showError('confirmPassword', 'Passwords do not match');
+                hasError = true;
+            }
+            
+            if (hasError) return;
+            
+            // Check if username already exists
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            if (users.find(u => u.username === username)) {
+                showError('signupUsername', 'Username already exists');
+                return;
+            }
+            
+            if (users.find(u => u.email === email)) {
+                showError('signupEmail', 'Email already registered');
+                return;
+            }
+            
+            // Create new user
+            const newUser = {
+                id: Date.now(),
+                username: username,
+                email: email,
+                password: password,
+                createdAt: new Date().toISOString(),
+                stats: {
+                    totalCards: 0,
+                    gamesPlayed: 0,
+                    bestStreak: 0,
+                    totalScore: 0
+                }
+            };
+            
+            users.push(newUser);
+            localStorage.setItem('users', JSON.stringify(users));
+            
+            showSuccess('Account created successfully! You can now login.');
+            
+            // Switch to login tab after successful signup
+            setTimeout(() => {
+                switchTab('login');
+                document.getElementById('loginUsername').value = username;
+            }, 2000);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is already logged in
+            const currentUser = localStorage.getItem('currentUser');
+            if (currentUser) {
+                window.location.href = '6 navigation.html';
+            }
+        });
+    </script>
+
+</body>
+</html>

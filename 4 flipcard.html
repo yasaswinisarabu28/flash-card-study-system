@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Flashcard Game</title>
+<style>
+body{
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    text-align:center;
+    background-image:url("background image for complete website.png");
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+}
+
+.game-container{
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.header{
+    background: rgba(255, 255, 255, 0.95);
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.game-stats{
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.stat-item{
+    text-align: center;
+    min-width: 100px;
+}
+
+.stat-number{
+    font-size: 28px;
+    font-weight: bold;
+    color: #6b46c1;
+}
+
+.stat-label{
+    font-size: 12px;
+    color: #718096;
+    text-transform: uppercase;
+}
+
+.card-container{
+    perspective: 1000px;
+    width: 350px;
+    height: 250px;
+    margin: 30px auto 90px auto;
+}
+
+.card{
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: 0.6s;
+    cursor: pointer;
+}
+
+.card.flipped{
+    transform: rotateY(180deg);
+}
+
+.front, .back{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    padding: 20px;
+    color: white;
+    text-align: center;
+}
+
+.back{
+    transform: rotateY(180deg);
+    background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+}
+
+.category-badge{
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    backdrop-filter: blur(10px);
+}
+
+.card-number{
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    backdrop-filter: blur(10px);
+}
+
+.answer-section{
+    background: rgba(255, 255, 255, 0.95);
+    padding: 30px;
+    border-radius: 15px;
+    margin: 20px 0;
+    margin-top: 40px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.answer-input{
+    width: 100%;
+    max-width: 400px;
+    padding: 15px;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 16px;
+    margin: 10px 0;
+    transition: border-color 0.3s;
+}
+
+.answer-input:focus{
+    outline: none;
+    border-color: #6b46c1;
+}
+
+.button-group{
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin: 20px 0;
+    flex-wrap: wrap;
+}
+
+button{
+    padding: 12px 25px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 14px;
+}
+
+.primary-btn{
+    background: #6b46c1;
+    color: white;
+}
+
+.primary-btn:hover{
+    background: #553c9a;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(107, 70, 193, 0.4);
+}
+
+.success-btn{
+    background: #48bb78;
+    color: white;
+}
+
+.success-btn:hover{
+    background: #38a169;
+    transform: translateY(-2px);
+}
+
+.warning-btn{
+    background: #ed8936;
+    color: white;
+}
+
+.warning-btn:hover{
+    background: #dd6b20;
+    transform: translateY(-2px);
+}
+
+.danger-btn{
+    background: #e53e3e;
+    color: white;
+}
+
+.danger-btn:hover{
+    background: #c53030;
+    transform: translateY(-2px);
+}
+
+.result-message{
+    margin: 20px 0;
+    padding: 15px;
+    border-radius: 8px;
+    font-weight: 600;
+    animation: slideIn 0.3s ease;
+}
+
+.correct{
+    background: #c6f6d5;
+    color: #22543d;
+    border: 1px solid #9ae6b4;
+}
+
+.incorrect{
+    background: #fed7d7;
+    color: #742a2a;
+    border: 1px solid #fc8181;
+}
+
+.info{
+    background: #bee3f8;
+    color: #2c5282;
+    border: 1px solid #90cdf4;
+}
+
+.progress-bar{
+    width: 100%;
+    height: 8px;
+    background: #e2e8f0;
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 15px 0;
+}
+
+.progress-fill{
+    height: 100%;
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    transition: width 0.3s ease;
+}
+
+.streak-indicator{
+    display: inline-block;
+    background: #f6ad55;
+    color: white;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-weight: bold;
+    animation: pulse 2s infinite;
+}
+
+@keyframes slideIn{
+    from{
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to{
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse{
+    0%, 100%{
+        transform: scale(1);
+    }
+    50%{
+        transform: scale(1.05);
+    }
+}
+
+.game-over{
+    background: rgba(255, 255, 255, 0.95);
+    padding: 30px;
+    border-radius: 15px;
+    margin: 20px 0;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.final-score{
+    font-size: 36px;
+    color: #6b46c1;
+    margin: 20px 0;
+}
+
+.performance-message{
+    font-size: 18px;
+    color: #4a5568;
+    margin: 15px 0;
+}
+
+.hidden{
+    display: none;
+}
+
+@media (max-width: 768px){
+    .card-container{
+        width: 300px;
+        height: 200px;
+    }
+    
+    .front, .back{
+        font-size: 16px;
+        padding: 15px;
+    }
+    
+    .button-group{
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    button{
+        width: 200px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="game-container">
+
+<div class="header">
+    <h1>🎯 Flashcard Challenge</h1>
+    <div class="game-stats">
+        <div class="stat-item">
+            <div class="stat-number" id="currentCard">1</div>
+            <div class="stat-label">Card</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number" id="totalCards">10</div>
+            <div class="stat-label">Total</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number" id="score">0</div>
+            <div class="stat-label">Score</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number" id="streak">0</div>
+            <div class="stat-label">Streak</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number" id="accuracy">0%</div>
+            <div class="stat-label">Accuracy</div>
+        </div>
+    </div>
+    <div class="progress-bar">
+        <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+    </div>
+</div>
+
+<div class="card-container">
+    <div class="card" id="flashcard">
+        <div class="front" id="questionSide">
+            <div class="category-badge" id="categoryBadge">📚 Vocabulary</div>
+            <div class="card-number" id="cardNumber">1/10</div>
+            <div id="questionText">Click to start!</div>
+        </div>
+        <div class="back" id="answerSide">
+            <div id="answerText">Answer will appear here</div>
+        </div>
+    </div>
+</div>
+
+<div class="answer-section">
+    <input type="text" id="userAnswer" class="answer-input" placeholder="Type your answer here..." onkeypress="handleKeyPress(event)">
+    
+    <div class="button-group">
+        <button onclick="checkAnswer()" class="primary-btn">✓ Check Answer</button>
+        <button onclick="skipCard()" class="danger-btn">⏭️ Next</button>
+        <button onclick="showHint()" class="success-btn">💡 Hint</button>
+    </div>
+    
+    <div id="resultMessage"></div>
+    
+    <div id="hintMessage" class="result-message info hidden"></div>
+</div>
+
+<div id="gameOverScreen" class="game-over hidden">
+    <h2>🎉 Game Complete!</h2>
+    <div class="final-score" id="finalScore">85%</div>
+    <div class="performance-message" id="performanceMessage">Great job!</div>
+    <div class="button-group">
+        <button onclick="restartGame()" class="primary-btn">🔄 Play Again</button>
+        <button onclick="newCards()" class="success-btn">➕ New Cards</button>
+    </div>
+</div>
+
+</div>
+
+<script>
+let flashcards = [];
+let currentCardIndex = 0;
+let score = 0;
+let streak = 0;
+let totalAttempts = 0;
+let correctAnswers = 0;
+let gameActive = true;
+let mistakes = [];
+
+// Initialize game
+window.onload = function() {
+    loadCards();
+    startGame();
+};
+
+function loadCards() {
+    const saved = localStorage.getItem("flashcards");
+    if (saved) {
+        flashcards = JSON.parse(saved);
+    }
+    
+    if (flashcards.length === 0) {
+        // Add sample cards if none exist
+        flashcards = [
+            {
+                id: 1,
+                category: "vocabulary",
+                question: "What does HTML stand for?",
+                answer: "Hyper Text Markup Language",
+                difficulty: 1,
+                attempts: 0,
+                correct: 0
+            },
+            {
+                id: 2,
+                category: "abbreviations",
+                question: "What does CSS stand for?",
+                answer: "Cascading Style Sheets",
+                difficulty: 1,
+                attempts: 0,
+                correct: 0
+            },
+            {
+                id: 3,
+                category: "definitions",
+                question: "What is JavaScript?",
+                answer: "A programming language for web development",
+                difficulty: 1,
+                attempts: 0,
+                correct: 0
+            }
+        ];
+    }
+    
+    // Shuffle cards for random order
+    flashcards = shuffleArray([...flashcards]);
+}
+
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
+
+function startGame() {
+    currentCardIndex = 0;
+    score = 0;
+    streak = 0;
+    totalAttempts = 0;
+    correctAnswers = 0;
+    gameActive = true;
+    mistakes = [];
+    
+    updateDisplay();
+    showCurrentCard();
+    
+    document.getElementById("gameOverScreen").classList.add("hidden");
+    document.getElementById("answer-section").classList.remove("hidden");
+}
+
+function showCurrentCard() {
+    if (currentCardIndex >= flashcards.length) {
+        endGame();
+        return;
+    }
+    
+    const card = flashcards[currentCardIndex];
+    const cardElement = document.getElementById("flashcard");
+    
+    // Reset card state
+    cardElement.classList.remove("flipped");
+    
+    // Update card content
+    document.getElementById("questionText").textContent = card.question;
+    document.getElementById("answerText").textContent = card.answer;
+    document.getElementById("categoryBadge").textContent = getCategoryIcon(card.category) + " " + card.category;
+    document.getElementById("cardNumber").textContent = `${currentCardIndex + 1}/${flashcards.length}`;
+    
+    // Clear input and results
+    document.getElementById("userAnswer").value = "";
+    document.getElementById("resultMessage").innerHTML = "";
+    document.getElementById("hintMessage").classList.add("hidden");
+    
+    // Focus on input
+    document.getElementById("userAnswer").focus();
+    
+    updateDisplay();
+}
+
+function flipCard() {
+    const card = document.getElementById("flashcard");
+    card.classList.toggle("flipped");
+}
+
+function checkAnswer() {
+    if (!gameActive) return;
+    
+    const userAnswer = document.getElementById("userAnswer").value.trim();
+    if (!userAnswer) {
+        showResult("Please enter an answer!", "info");
+        return;
+    }
+    
+    const card = flashcards[currentCardIndex];
+    totalAttempts++;
+    
+    // Update card statistics
+    card.attempts++;
+    
+    const isCorrect = compareAnswers(userAnswer, card.answer);
+    
+    if (isCorrect) {
+        correctAnswers++;
+        card.correct++;
+        score += 10 + (streak * 2); // Bonus points for streak
+        streak++;
+        showResult("🎉 Correct! Well done!", "correct");
+        
+        // Auto advance after correct answer
+        setTimeout(() => {
+            nextCard();
+        }, 1500);
+    } else {
+        streak = 0;
+        mistakes.push({
+            question: card.question,
+            userAnswer: userAnswer,
+            correctAnswer: card.answer
+        });
+        showResult(`❌ Incorrect. The correct answer is: ${card.answer}`, "incorrect");
+        
+        // Flip card to show answer
+        const cardElement = document.getElementById("flashcard");
+        cardElement.classList.add("flipped");
+        
+        // Auto advance after incorrect answer
+        setTimeout(() => {
+            nextCard();
+        }, 2500);
+    }
+    
+    // Update card in storage
+    updateCardProgress(card);
+    updateDisplay();
+}
+
+function compareAnswers(userAnswer, correctAnswer) {
+    // Normalize both answers for comparison
+    const normalize = (str) => str.toLowerCase().trim().replace(/[^\w\s]/g, '');
+    return normalize(userAnswer) === normalize(correctAnswer);
+}
+
+function showResult(message, type) {
+    const resultDiv = document.getElementById("resultMessage");
+    resultDiv.innerHTML = `<div class="result-message ${type}">${message}</div>`;
+}
+
+function showHint() {
+    const card = flashcards[currentCardIndex];
+    const hint = generateHint(card.answer);
+    const hintDiv = document.getElementById("hintMessage");
+    hintDiv.textContent = `💡 Hint: ${hint}`;
+    hintDiv.classList.remove("hidden");
+}
+
+function generateHint(answer) {
+    // Show first few characters or word count
+    if (answer.length <= 10) {
+        return `It starts with "${answer.charAt(0)}" and has ${answer.length} letters`;
+    } else {
+        const words = answer.split(' ');
+        return `It has ${words.length} words and starts with "${words[0]}"`;
+    }
+}
+
+function skipCard() {
+    if (!gameActive) return;
+    
+    const card = flashcards[currentCardIndex];
+    mistakes.push({
+        question: card.question,
+        userAnswer: "SKIPPED",
+        correctAnswer: card.answer
+    });
+    
+    nextCard();
+}
+
+function nextCard() {
+    currentCardIndex++;
+    showCurrentCard();
+}
+
+function handleKeyPress(event) {
+    if (event.key === 'Enter') {
+        checkAnswer();
+    }
+}
+
+function updateDisplay() {
+    document.getElementById("currentCard").textContent = Math.min(currentCardIndex + 1, flashcards.length);
+    document.getElementById("totalCards").textContent = flashcards.length;
+    document.getElementById("score").textContent = score;
+    document.getElementById("streak").textContent = streak;
+    
+    const accuracy = totalAttempts > 0 ? Math.round((correctAnswers / totalAttempts) * 100) : 0;
+    document.getElementById("accuracy").textContent = accuracy + "%";
+    
+    const progress = flashcards.length > 0 ? (currentCardIndex / flashcards.length) * 100 : 0;
+    document.getElementById("progressFill").style.width = progress + "%";
+}
+
+function updateCardProgress(card) {
+    // Update card in localStorage
+    const index = flashcards.findIndex(c => c.id === card.id);
+    if (index !== -1) {
+        flashcards[index] = card;
+        localStorage.setItem("flashcards", JSON.stringify(flashcards));
+    }
+}
+
+function getCategoryIcon(category) {
+    const icons = {
+        vocabulary: "📚",
+        definitions: "📖",
+        abbreviations: "🔤",
+        antonyms: "🔄",
+        translations: "🌍",
+        formulas: "🧮",
+        dates: "📅",
+        custom: "✏️"
+    };
+    return icons[category] || "📝";
+}
+
+function endGame() {
+    gameActive = false;
+    const accuracy = Math.round((correctAnswers / totalAttempts) * 100);
+    
+    document.getElementById("finalScore").textContent = accuracy + "%";
+    document.getElementById("performanceMessage").textContent = getPerformanceMessage(accuracy);
+    document.getElementById("gameOverScreen").classList.remove("hidden");
+    document.querySelector(".answer-section").classList.add("hidden");
+    
+    // Save game statistics
+    saveGameStats(accuracy, score, mistakes);
+}
+
+function getPerformanceMessage(accuracy) {
+    if (accuracy >= 90) return "🏆 Outstanding! You're a master!";
+    if (accuracy >= 80) return "🌟 Excellent work! Keep it up!";
+    if (accuracy >= 70) return "👍 Good job! Room for improvement!";
+    if (accuracy >= 60) return "📚 Not bad! Practice makes perfect!";
+    return "💪 Keep studying! You'll get better!";
+}
+
+function saveGameStats(accuracy, score, mistakes) {
+    const stats = {
+        date: new Date().toISOString(),
+        accuracy: accuracy,
+        score: score,
+        totalCards: flashcards.length,
+        mistakes: mistakes
+    };
+    
+    const existingStats = JSON.parse(localStorage.getItem("gameStats") || "[]");
+    existingStats.push(stats);
+    
+    // Keep only last 10 games
+    if (existingStats.length > 10) {
+        existingStats.shift();
+    }
+    
+    localStorage.setItem("gameStats", JSON.stringify(existingStats));
+}
+
+function restartGame() {
+    flashcards = shuffleArray([...flashcards]);
+    startGame();
+}
+
+function newCards() {
+    window.location.href = "3 create flashcard.html";
+}
+
+function reviewMistakes() {
+    if (mistakes.length === 0) {
+        alert("No mistakes to review! Great job!");
+        return;
+    }
+    
+    // Create a review session with mistakes
+    flashcards = mistakes.map((mistake, index) => ({
+        id: Date.now() + index,
+        category: "review",
+        question: mistake.question,
+        answer: mistake.correctAnswer,
+        difficulty: 1,
+        attempts: 0,
+        correct: 0
+    }));
+    
+    startGame();
+}
+</script>
+
+</body>
+</html>

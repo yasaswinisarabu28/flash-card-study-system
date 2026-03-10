@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Flashcard Creator</title>
+<style>
+body{
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    text-align:center;
+    background-image:url("background image for complete website.png");
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+}
+
+.container{
+    background:rgba(255, 255, 255, 0.95);
+    max-width:600px;
+    margin:auto;
+    padding:30px;
+    margin-top:50px;
+    border-radius:15px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.2);
+    backdrop-filter: blur(10px);
+}
+
+h2{
+    color: #6b46c1;
+    margin-bottom: 25px;
+    font-size: 28px;
+}
+
+.form-group{
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+label{
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #4a5568;
+}
+
+select, textarea, input{
+    width:100%;
+    padding:12px;
+    border:2px solid #e2e8f0;
+    border-radius:8px;
+    font-size:14px;
+    transition: border-color 0.3s;
+    box-sizing: border-box;
+}
+
+select:focus, textarea:focus, input:focus{
+    outline: none;
+    border-color: #6b46c1;
+}
+
+textarea{
+    height:60px;
+    resize: vertical;
+}
+
+.card-list{
+    margin-top: 30px;
+    text-align: left;
+}
+
+.card-item{
+    background: #f7fafc;
+    padding:15px;
+    margin:10px 0;
+    border-radius:8px;
+    border-left:4px solid #6b46c1;
+    position: relative;
+}
+
+.card-item .category-badge{
+    display: inline-block;
+    background: #6b46c1;
+    color: white;
+    padding:4px 8px;
+    border-radius:4px;
+    font-size:12px;
+    margin-bottom:8px;
+}
+
+.card-item .delete-btn{
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #e53e3e;
+    color: white;
+    border: none;
+    border-radius:4px;
+    padding:5px 10px;
+    cursor: pointer;
+    font-size:12px;
+}
+
+.card-item .delete-btn:hover{
+    background: #c53030;
+}
+
+.button-group{
+    display: flex;
+    gap: 15px;
+    margin-top: 25px;
+}
+
+button{
+    flex: 1;
+    padding:12px 20px;
+    cursor:pointer;
+    transition:0.3s;
+    border:none;
+    border-radius:8px;
+    font-weight: 600;
+    font-size:16px;
+}
+
+.primary-btn{
+    background: #6b46c1;
+    color: white;
+}
+
+.primary-btn:hover{
+    background: #553c9a;
+    transform: translateY(-2px);
+    box-shadow:0 5px 15px rgba(107, 70, 193, 0.4);
+}
+
+.secondary-btn{
+    background: #48bb78;
+    color: white;
+}
+
+.secondary-btn:hover{
+    background: #38a169;
+    transform: translateY(-2px);
+    box-shadow:0 5px 15px rgba(72, 187, 120, 0.4);
+}
+
+.danger-btn{
+    background: #e53e3e;
+    color: white;
+}
+
+.danger-btn:hover{
+    background: #c53030;
+}
+
+.stats{
+    background: #edf2f7;
+    padding:15px;
+    border-radius:8px;
+    margin-top:20px;
+    display: flex;
+    justify-content: space-around;
+}
+
+.stat-item{
+    text-align: center;
+}
+
+.stat-number{
+    font-size:24px;
+    font-weight: bold;
+    color: #6b46c1;
+}
+
+.stat-label{
+    font-size:12px;
+    color: #718096;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>🎯 Create Flashcards</h2>
+
+<div class="form-group">
+    <label for="category">Category</label>
+    <select id="category">
+        <option value="vocabulary">📚 Vocabulary</option>
+        <option value="definitions">📖 Definitions</option>
+        <option value="abbreviations">🔤 Abbreviations</option>
+        <option value="antonyms">🔄 Antonyms</option>
+        <option value="translations">🌍 Translations</option>
+        <option value="formulas">🧮 Formulas</option>
+        <option value="dates">📅 Important Dates</option>
+        <option value="custom">✏️ Custom</option>
+    </select>
+</div>
+
+<div class="form-group">
+    <label for="question">Question/Prompt</label>
+    <textarea id="question" placeholder="e.g., What does HTML stand for?"></textarea>
+</div>
+
+<div class="form-group">
+    <label for="answer">Answer</label>
+    <textarea id="answer" placeholder="e.g., Hyper Text Markup Language"></textarea>
+</div>
+
+<div class="button-group">
+    <button onclick="addCard()" class="primary-btn">➕ Add Card</button>
+    <button onclick="submitCards()" class="secondary-btn">🎮 Start Game</button>
+    <button onclick="clearAll()" class="danger-btn">🗑️ Clear All</button>
+</div>
+
+<div class="stats">
+    <div class="stat-item">
+        <div class="stat-number" id="totalCards">0</div>
+        <div class="stat-label">Total Cards</div>
+    </div>
+    <div class="stat-item">
+        <div class="stat-number" id="categoriesCount">0</div>
+        <div class="stat-label">Categories</div>
+    </div>
+    <div class="stat-item">
+        <div class="stat-number" id="readyStatus">❌</div>
+        <div class="stat-label">Ready to Play</div>
+    </div>
+</div>
+
+<div class="card-list" id="cardList"></div>
+
+</div>
+
+<script>
+let flashcards = [];
+
+// Load existing cards on page load
+window.onload = function() {
+    loadCards();
+    updateDisplay();
+};
+
+function loadCards() {
+    const saved = localStorage.getItem("flashcards");
+    if (saved) {
+        flashcards = JSON.parse(saved);
+    }
+}
+
+function addCard() {
+    const category = document.getElementById("category").value;
+    const question = document.getElementById("question").value.trim();
+    const answer = document.getElementById("answer").value.trim();
+
+    if (!question || !answer) {
+        alert("Please fill in both question and answer!");
+        return;
+    }
+
+    const card = {
+        id: Date.now(),
+        category: category,
+        question: question,
+        answer: answer,
+        difficulty: 1,
+        attempts: 0,
+        correct: 0
+    };
+
+    flashcards.push(card);
+    saveCards();
+    updateDisplay();
+
+    // Clear form
+    document.getElementById("question").value = "";
+    document.getElementById("answer").value = "";
+
+    // Show success feedback
+    const btn = event.target;
+    const originalText = btn.textContent;
+    btn.textContent = "✅ Added!";
+    btn.style.background = "#48bb78";
+    setTimeout(() => {
+        btn.textContent = originalText;
+        btn.style.background = "";
+    }, 1000);
+}
+
+function deleteCard(id) {
+    flashcards = flashcards.filter(card => card.id !== id);
+    saveCards();
+    updateDisplay();
+}
+
+function clearAll() {
+    if (confirm("Are you sure you want to delete all flashcards?")) {
+        flashcards = [];
+        saveCards();
+        updateDisplay();
+    }
+}
+
+function saveCards() {
+    localStorage.setItem("flashcards", JSON.stringify(flashcards));
+}
+
+function submitCards() {
+    if (flashcards.length === 0) {
+        alert("Please add at least one flashcard before starting the game!");
+        return;
+    }
+    
+    // Save and redirect to game
+    saveCards();
+    window.location.href = "4 flipcard.html";
+}
+
+function updateDisplay() {
+    // Update stats
+    document.getElementById("totalCards").textContent = flashcards.length;
+    
+    const categories = [...new Set(flashcards.map(card => card.category))];
+    document.getElementById("categoriesCount").textContent = categories.length;
+    
+    document.getElementById("readyStatus").textContent = flashcards.length > 0 ? "✅" : "❌";
+
+    // Update card list
+    const cardList = document.getElementById("cardList");
+    cardList.innerHTML = "";
+
+    flashcards.forEach(card => {
+        const cardDiv = document.createElement("div");
+        cardDiv.className = "card-item";
+        cardDiv.innerHTML = `
+            <div class="category-badge">${getCategoryIcon(card.category)} ${card.category}</div>
+            <div><strong>Q:</strong> ${card.question}</div>
+            <div><strong>A:</strong> ${card.answer}</div>
+            <button class="delete-btn" onclick="deleteCard(${card.id})">Delete</button>
+        `;
+        cardList.appendChild(cardDiv);
+    });
+}
+
+function getCategoryIcon(category) {
+    const icons = {
+        vocabulary: "📚",
+        definitions: "📖",
+        abbreviations: "🔤",
+        antonyms: "🔄",
+        translations: "🌍",
+        formulas: "🧮",
+        dates: "📅",
+        custom: "✏️"
+    };
+    return icons[category] || "📝";
+}
+</script>
+
+</body>
+</html>
